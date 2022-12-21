@@ -1,4 +1,4 @@
-# Scientific Data Management
+# :mortar_board: Master's thesis - Scientific Data Management
 
 ## Abstract 
 
