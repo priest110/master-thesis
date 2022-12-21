@@ -1,0 +1,17 @@
+The organisation of the data was an important aspect to consider when developing the solution, taking into account the structure and nomenclature defined in Subsection \ref{tab:sail_project}.
+
+To take advantage of the usability, before inserting the datasets we tried to match the features of \textit{\gls{ckan}} to what we wanted from the data. As such, we first took the preprocessed data sample and converted it to a CSV format, since \textit{\gls{ckan}} tools allow geospatial availability and interaction with it from structured data, and provide other formats that are also interesting for us to analyse the data, such as table and graph. Thus, we are able to test the usability of the data with geospatial fields, with the help of extensions, which we will talk about later. With regard to the raw \gls{gnss} and \gls{nmea} data, it would also be possible for us to convert it to CSV and make it viewable, however, it is purely data associated with location and time, whereas the structure data associates location with other data relating to atmospheric conditions, so we have chosen to keep the \gls{gnss} and \gls{nmea} data in the original format.
+
+We have organised the information into 3 different types of datasets, whose titles are as follows:
+
+\begin{itemize}
+    \item Structured atmospheric measurements;
+    \item Raw \gls{gnss} measurements (YYYY/MM/DD);
+    \item Raw \gls{nmea} measurements (YYYY/MM/DD).
+\end{itemize}
+
+For each type of dataset, we have several datasets encompassing daily information regarding \gls{gnss} and \gls{nmea} measurements, and one dataset for the structured data since our preprocessed sample has only 6 files, each one on a different atmospheric condition. However, it would make sense to adopt the same behaviour for the structured data with a sample of the same size as the other measurements, and consider a different daily dataset for each atmospheric condition.
+
+At this point, we can already see that we will have dozens and dozens of datasets, since they are daily datasets. As such, we chose to insert the date in the title so that not all datasets have the same name and it also allows us to find any dataset through a search in \textit{\gls{ckan}'s} search engine, for example, if we search for "title:23", all datasets that have 23 in the title will appear, including the datasets that have the day 23. However, if we choose to search for "title:10" will already appear datasets with month equal to 10 and/or day equal to 10, therefore, we chose to add 3 key-value pairs to the metadata, being the keys "year", "month" and "day", so if we search for "day:10 month:01" will effectively only appear the datasets associated with day 10 of month 01.
+
+Finally, besides the datasets and respective files, we also included in the system 2 organisations -- \gls{inesctec} and High-Assurance Software Laboratory (HASLab), which is one of \gls{inesctec}'s integrated R\&D centres -- and 1 group -- \gls{sail} Project. While it is necessary in \textit{\gls{ckan}} to have an organisation that owns and manages the information, in this case study, \gls{inesctec}, there is no need for groups, however, they can be used in order to catalogue a team, theme or project, in this case \gls{sail} Project.

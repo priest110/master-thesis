@@ -1,0 +1,99 @@
+\label{sec:background}
+
+\subsection{DMS}
+  
+\gls{dms} provides a self-service environment for users to access, define, and manipulate data. The powerful tools in such a system use metadata management to automate data organisation, to show relationships between data, and some even include functionality for government, business, or scientific data \citep{7}.
+
+Databases are the most common platform for data management, but file systems or cloud object storage services are also used, which generally offer greater flexibility over databases since they organize data in a less structured way. 
+  
+\gls{dms}s have evolved and now present several options regarding the data model. A data model is an abstract model that organises data elements, documents how data is stored and retrieved and designs the necessary response to information system requirements. The main existing models are as follows:
+  
+\begin{itemize}
+    \item Hierarchical data model, each component has a child/parent relationship with another component;
+    \item Network data model, each component can have multiple relationships;
+    \item Relational data model, each component has attributes that are linked to their identities through a table structure.
+\end{itemize}
+  
+Other data models include graph database, relation-entity, and object-oriented.
+  
+This dissertation will focus on \gls{sdms}s, which aim to increase the productivity of any research without neglecting any sharing and collaboration efforts. \gls{sdms} is a better approach to handle unstructured data, which includes images, PDF files, spreadsheets, geographic coordinates, and other data formats resulting from an investigation. 
+
+\subsection{\label{tab:sail_project}SAIL Project}
+
+The case study focus on measuring the electric field of the atmosphere over the ocean and monitoring gamma, solar and cosmic radiation or \gls{gnss} signals, as well as taking into account other aspects such as temperature and pH. That being said, we can see that the study has a wide diversity of data, and it is also important to consider the fact that this campaign collected data every second, with hourly records for 371 days.
+  
+We needed to understand what data would need to be considered and how they are organised in order to adapt the system we intended to develop. Therefore, in order to find an answer to this point, we tried to meet with the project's research team, and we were able to meet with one of the members who informed us about the campaign data we need to work with:
+
+  
+\begin{itemize}
+    \item \gls{gnss} data, which refers to a constellation of satellites providing signals from space that transmit positioning and timing data to \gls{gnss} receivers. \gls{gnss} data can be represented in different formats -- binary, RAWIMUX, and \gls{nmea} -- with \gls{nmea} being the one to pay particular attention to  when testing the volume of data;
+    \item Atmospheric data, specifically electric field (E1 and E2), gamma radiation (GA), visibility (VI) and radiation (inSL and outSL), which constitute a smaller sample compared to the first type, referring to 30/60 days. These data are more interesting and easier to work with, since they were previously processed and subjected to quality control procedures.
+\end{itemize}
+
+In order to organise the data, a conventional nomenclature was adopted, consisting of: activity type + infix data group + infix measured parameter. Regarding the \gls{gnss} data we will explore, these are divided into 2 groups: ship data (SHIP) and sensor data (SD), and atmospheric data are in the pre-processed data (PD) group. Therefore, the following is the nomenclature that will be used in the datasets and system files:
+
+\begin{itemize}
+    \item GNNS - SAIL\_SHIP\_GNSS\_*
+    \item GNNS \gls{nmea} standard - SAIL\_SD\_GNSS\_NMEA\_*
+    \item Atmospheric fields - SAIL\_PD\_E1\_*, SAIL\_PD\_E2\_*, SAIL\_PD\_GA\_*, SAIL\_PD\_VI\_*, SAIL\_PD\_inSL\_*, SAIL\_PD\_outSL\_*
+\end{itemize}
+
+The * above denotes two possibilities -- yyyymmddd for compressed files or yyyymmddd\_hh for files -- where yyyy is the year, mm is the month, dd is the day and hh is the hour. 
+
+There were two antennas collecting information from the Sagres ship and each compressed file includes information collected per day by those antennas. Each compressed file includes files with data associated with each hour of the day, i.e. a total of 48 files per day.
+  
+\newpage  
+  
+\subsection{Key Criteria for SDMSs}
+  
+Key criteria are defined by three dimensions: architecture, interoperability \& metadata, and usability \& security.
+    
+\begin{table}[!h]
+    \centering
+    \caption{Key criteria by dimension}
+    \begin{tabular}{|c|c|c|} 
+        \hline
+        Architecture                & Interoperability \& metadata    & Usability \& security      \\ 
+        \hline
+        Installation and deployment & \gls{api}s                            & Popularity                 \\
+        Open source                 & Harvesting protocols            & Advanced search            \\
+        Storage replication         & Standard schemas                & Geospatial tools           \\
+        Storage location            & Validation                      & Authorised authentication  \\
+        Customisation               & Federation                      & Curation workflow          \\ 
+        \cline{1-1}\cline{3-3}
+        \multicolumn{1}{l|}{}       & Digital Object Identifier (DOI) & \multicolumn{1}{l}{}       \\
+        \cline{2-2}
+    \end{tabular}
+\end{table}
+    
+\subsubsection{Architecture}
+	
+The installation and setup of any system should be as easy and flexible as possible. This work can usually be done through some repository of the institution that owns the platform or by outsourcing an external service (\textit{Docker}, for example). Moreover, free access to the source code allows a better study and, consequently, understanding of the developed software. Furthermore, the fact that the code is not open source exposes the possibility that the platform's support is not done indefinitely and depends on third parties \citep{1}.
+	
+In a specific case for any \gls{dms}, if its database fails for a moment, it will not be a problem if we consider database replication, otherwise we may lose all the information. As such, storage replication will also be an important aspect to consider.
+	
+Finally, other interesting aspects to consider are the location where the data is kept (remotely or locally), and the ability of the system to be customised as well as extended. The latter allows the community to develop scientific data management solutions that are not restricted by the existing functionalities.
+	    
+\subsubsection{Interoperability and metadata}
+    
+On the one hand, the existence of \gls{api}s in a scientific data management solution, allows its integration into external systems, which grants greater visibility and subsequent improvement of its content. On the other hand, metadata interoperability can be facilitated through compliance with standard protocols for harvesting metadata, such as the Open Archives Initiative Protocol for Metadata Harvesting (OAI-PMH) \citep{1}, with harvesting metadata referring to the automated collection of metadata description from several places to generate useful aggregations of their information. 
+    
+Along with protocols such as OAI-PMH, metadata standardisation can be useful, because if everyone uses different standards it can be very difficult to compare and analyse data \citep{7}. Moreover, to ensure that the data to be analysed is correct, data validation is advantageous when creating any dataset.
+    
+Federation with a web service should be possible, since the creation of a federated network of data portals that share and disseminate information between each other is very useful, as it provides the interoperability, consistency, and access controls needed to enhance the cooperation and security policies between the different research centers across multiple networks.    
+    
+From a long-term perspective, assigning a persistent unique identifier to the resources that are stored, like Digital Object Identifier (DOI), is also very important, as it persists with each resource forever, even if its location or form of storage changes over time, which also makes it easier to cite resources that could be extremely useful to any researcher.
+    
+Finally, the resources available in the system may be used freely or not, since any user holding a given dataset has the right to protect the use of its content. Therefore, the platform must guarantee the possibility of granting a licence to any data.
+    
+\subsubsection{Usability and security}
+    
+Lastly, there are also a few more criteria in a more general overview that also deserve attention. First, as any solution to any problem on the market is also evaluated by its popularity, \gls{sdms}s are no exception, as it is natural to assume that greater popularity leads to greater use and validation (or not) of the product. In addition, it enhances the diffusion of the solution and increases the size of the community, which allows for an improvement in knowledge and consequent usability for the system in question.
+
+Another relevant factor to usability is its search, the aim being as intuitive and intelligent as possible. More than allowing a simple search, it is important to consider advanced search features, as it offers a greater number of tools for any researcher to find what they want more easily. Likewise, advanced geospatial features can be advantageous to use in the context of scientific investigations.
+    
+Some security policies can be offered to organisations that use data management solutions, one of which is authorised authentication, in other words, it is possible that these same organisations control who can carry out actions on their resources. For example, authorisation systems can manage who can register/delete new users, or who can edit/create/delete datasets.
+    
+Usually, researchers are not experts in data management, therefore, they need intuitive and efficient tools to produce the intended results without the need for complex learning about the functioning of an effective solution to the problem of managing scientific data. Not to mention that the available workflow has to be viable both in the immediate and long term to scientific research, that is, curation workflow.  
+    
+In short, any solution that is easy and safe to use is closer to being adopted in the daily work of an investigator.

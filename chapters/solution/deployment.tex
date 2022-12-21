@@ -1,0 +1,55 @@
+First of all, we describe the requirements for deploying the software on a new machine, as well as a step-by-step approach to try it out.
+
+\newpage
+
+For the installation of the system it is necessary to meet certain prerequisites, which are listed below:
+
+\begin{itemize}
+    \item Unrestricted access to external domains, such as \textit{GitHub} or \textit{DockerHub};
+    \item Have docker, docker-compose and git installed;
+\end{itemize}
+
+Once the prerequisites listed above are met, we need to download the software as well as some custom images to run certain docker containers. For this, we need to run the following commands:
+
+\begin{itemize}
+    \item Clone \textit{\gls{ckan}} into a directory of choice:
+        \begin{verbatim}
+cd /path/to/directory
+git clone https://github.com/priest110/ckan.git
+        \end{verbatim}
+    \item Pull the required docker images from the \textit{DockerHub}:
+        \begin{verbatim}
+docker pull priest110/docker_db:1.0.0
+docker pull priest110/docker_ckan:1.0.0
+        \end{verbatim}    
+\end{itemize}
+
+Reaching this point, we have a working system, however, the \textit{Docker} installation has a problem regarding the recognition of localhost as a valid address (where the main service \textit{\gls{ckan}} is running) for other services, in this case for the \textit{Datapusher}, which makes it impossible to run well. As such, some changes need to be made to the hosts file:
+
+\begin{enumerate}
+    \item First, find the IP 0f the docker0 bridge:
+    \begin{verbatim}
+ip addr show | grep docker0
+    \end{verbatim}
+    \item An example of the possible output:
+    \begin{verbatim}
+10: docker0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state 
+DOWN group default 
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0:
+    \end{verbatim}
+    \item Next, we can then edit /etc/hosts/ file:
+    \begin{verbatim}
+172.17.0.1 dockerhost
+    \end{verbatim}
+    \item Restart the \textit{Docker} daemon:
+    \begin{verbatim}
+sudo service docker restart
+    \end{verbatim}
+    \item Run:
+    \begin{verbatim}
+docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
+    \end{verbatim}
+\end{enumerate}
+
+After this, we have all the services working well, just navigate to http://dockerhost:5000 and explore.
+

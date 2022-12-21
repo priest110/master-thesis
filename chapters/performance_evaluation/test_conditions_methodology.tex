@@ -1,0 +1,100 @@
+To test the system, we used one of the machines from the \gls{inesctec}, specifically described in Table \ref{tab:machine}.
+
+  
+  \begin{table}[H]
+    \centering
+    \begin{tabular}{|l|l|}
+      \hline
+      \textbf{CPU   }        & Intel® Xeon® E5-2698 v4         \\ \hline
+      \textbf{\#Sockets}          & 2                              \\ \hline
+      \textbf{\#Cores per socket}          & 20                              \\ \hline  
+      \textbf{\#Threads per core}          & 2                              \\ \hline
+      \textbf{CPU Frequency}       & 2.2 GHz (base), 3.60 GHz (max.) \\ \hline
+      \textbf{Memory}          & 32 GB DDR4-2400             \\ \hline
+    \end{tabular}
+    \caption{\label{tab:machine}Description of the machine used}
+  \end{table}
+  
+  We used the \textit{Locust} \citep{loc} tool and the iostat command for testing. On the one hand, \textit{Locust} is a load testing tool developed in \textit{Python} that allows us to run tests in a distributed way across multiple machines and simulate thousands of users making requests concurrently. It produces two metrics: throughput, i.e. the number of requests the server can handle in a unit of time, and the response time, i.e. the time the server takes from the time it receives a request until it answers it (these two metrics seem to be the inverse of each other, but they are not, since throughput is very much limited by the number of requests we can launch per unit of time, while response time will be limited by the server's processing and resource management capacity). On the other hand, the iostat command is used for monitoring system input/output devices by observing the time they are active in relation to their respective average transfer rates, and allowed us to extract information regarding two other metrics: CPU and Disk utilisation.
+   
+  The tests were done using a variable number of clients, specifically from 0 to 1000, and the increment was divided into 3 stages:
+  \begin{itemize}
+      \item 0 to 100 concurrent users with a ramp up speed of 2 users/second;
+      \item 100 to 500 concurrent users with a ramp up speed of 4 users/second;
+      \item 500 to 1000 concurrent users with a ramp up speed of 6 users/second.
+  \end{itemize}
+  
+  The interval from 0 to 1000 was chosen since from 1000 users on, and even before that, in some cases, there were already system faults (and not failures) due to the considerable weight of certain requests, which had the usual consequence of exceeding the timeout that we consider to be adequate in the response to a read request made to the server -- 5 seconds. Nevertheless, this interval proved to be more than enough to understand how the system responds, taking into account the hardware and the different types of requests used (shown in Table \ref{tab:type_requests}), where not all possible ones were contemplated, we neglected those that we considered to have no real relevance to reliably measure the performance of the system on a large scale. When it comes to the choice of using different stages, the goal was to understand the system's ability to adapt to different quantities and growths of users.
+  
+  \newpage
+  
+  \begin{table}[H]
+    \centering
+    \begin{tabular}{|>{\centering\arraybackslash}p{1.25cm}|>{\centering\arraybackslash}p{7cm}|>{\centering\arraybackslash}p{4cm}|>{\centering\arraybackslash}p{2.25cm}|}
+      \hline
+      \textbf{Type} & \textbf{URL (with prefix /api/3/action)} &  \textbf{Description} & \textbf{Probability}
+      \\ \hline
+      GET   & /current\_package\_list\_with\_resources
+            & \begin{tabular}[c]{@{}l@{}}Return a list of the \\site’s datasets and \\their resources\end{tabular} 
+            & 5       
+            \\ \hline
+      GET   & /package\_show?id
+            & \begin{tabular}[c]{@{}l@{}}Return the metadata \\of a dataset and its \\resources\end{tabular}
+            & 5   
+            \\ \hline
+      GET   & /resource\_show?id 
+            & \begin{tabular}[c]{@{}l@{}}Return the metadata \\of a resource  \end{tabular} 
+            & 4
+            \\ \hline
+      GET   & /group\_list 
+            & \begin{tabular}[c]{@{}l@{}}Return a list of the\\ names of the site’s\\ groups\end{tabular} 
+            & 3         
+            \\ \hline
+      GET   & /organization\_list
+            & \begin{tabular}[c]{@{}l@{}}Return a list of the\\ names of the site’s \\organisations\end{tabular}  
+            & 3         
+            \\ \hline
+      POST  & /package\_create
+            & Creates a new dataset 
+            &     
+            \\ \cline{1-3}
+      POST  & /package\_revise
+            & \begin{tabular}[c]{@{}l@{}}Revise a dataset \\selectively\\ with match, filter and \\update parameters\end{tabular}
+            & 1
+            \\ \cline{1-3}
+      POST  & /resource\_create\_default\_resource\_views 
+            & \begin{tabular}[c]{@{}l@{}}Creates the default \\views (if necessary) on \\the provided resource\end{tabular} 
+            &       
+            \\ \cline{1-3}
+      POST  & /datastore\_create 
+            & \begin{tabular}[c]{@{}l@{}}Adds a new table\\ to the \textit{DataStore}\end{tabular} 
+            &      
+            \\ \hline
+    \end{tabular}
+    \caption{\label{tab:type_requests}Types of requests}
+  \end{table}
+  % \usepackage{multirow}
+
+  
+  All the core functionality of the site provided by \textit{\gls{ckan}} can be used through external code that invokes the \gls{api}, which will be extremely useful in testing. As such, the requests listed in the table above make use of the strong \gls{api} that \textit{\gls{ckan}} provides, which unlike requests made through the  web UI, do not need to load any views or templates. Also, for testing purposes, POST requests can only be recreated through the \gls{api}, so in order to get a fair comparison between requests, we chose to use only the \gls{api} to evaluate performance.
+
+   
+  Until we got to a realistic case, developing the tests required a cycle of optimizing/measuring the results in order to build a real test of an efficient server. As such, we divided the evaluation moments into three distinct ones:
+  
+  
+  \begin{enumerate}
+   \item Individual case, to understand how the system worked with just one individual type of request;
+   \item Preliminary case, where we worked only with read-only requests, since in our view they are the ones that exist more frequently in the system and allowed us to get a sense of how it works while analysing other influencing factors based on the server and test tool settings:
+   \begin{enumerate}
+        \item waiting time between requests
+        \item load distribution
+        \item connection pool
+   \end{enumerate}
+   \item Realistic case with read and write requests, each request with a specific probability of occurring, since there are requests that are more frequent than others.
+  \end{enumerate}
+    
+  \label{tab:request_factors}
+
+  The instrumentation methodology, is as follows: we run a script with the \textit{Locust} that creates users and each one executes tasks, one at a time, until a voluntary stop is made, more specifically, about 10s after we get the 1000 users (each test took, on average, 4 minutes and 30 seconds). Each read request is included in a different task, while the four write requests are included in a single task, since for each insertion of new non empty dataset, we need one to create the dataset and another to add a certain resource, and besides different requests for each insertion, it is necessary to create default views for the resource, as well as add it to the \textit{DataStore} (the latter two allow the resources to be viewed and exploitable). It should be noted that each test was repeated several times in order to understand if the values presented were valid or suffered from some extraneous anomaly.
+  
+  \newpage

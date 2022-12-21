@@ -1,0 +1,89 @@
+  One of the great advantages of \textit{\gls{ckan}} is effectively its customisation and the existence of numerous solutions developed for use as extensions to its base system. As such, we examined which extensions could be interesting to explore in our case study, as well as the outcomes and consequences of their implementations.
+  
+  \subsubsection{ckanext-spatial}
+  
+  This extension, along with ckanext-geoview, are undoubtedly the ones that had the greatest impact meeting the requirements of the \gls{sail} Project, because they allowed answers to two of the five questions posed at the start of the chapter. More specifically, the geospatial capabilities that this extension added to the system include:
+  
+  \begin{itemize}
+      \item A new field ("spatial") in the dataset metadata schema, which allows this same field to be available through a map on the front-end of the dataset's respective page, and also geospatial queries, such as filtering by geographic area;
+      \item Harvesters to import geospatial metadata from other sources into \textit{\gls{ckan}}.
+  \end{itemize}
+  
+  As for the same dataset we have several files with different latitudes and longitudes, we have chosen to collect the information regarding the maximum and minimum values of each measure. Thus, we obtain an area relative to the investigation of each day, this area being the value of the "spatial" key, which after adding to the metadata is ready to be viewed.
+
+  \subsubsection{ckanext-geoview}
+  
+  This extension contains view plugins to display geospatial files and services in \textit{\gls{ckan}}. Thus, it made it possible for all resources with structured data with latitude and longitude fields to be viewed through a geographical map, and also provided filtering capabilities, for example, in the number of entries to be viewed in a given file, and interaction, for example, in the ability through the map to access a particular climatic condition associated with a geographical point.
+  
+  \subsubsection{ckanext-harvest}
+  
+  Although this is not something essential to consider for a project like the one we are addressing, we believe that this extension will add quality to any system that manages data, as it allows us to generate datasets from other sources.
+
+  For instance, considering that some research team outside \gls{inesctec} would like to access some of the data provided by the \gls{sail} project in order to explore it further or in a different way, new information could emerge that \gls{inesctec} would consider interesting to make available on its platform. For that, it would be enough to use a harvester to fetch the remote dataset from where the new data would be into our system.
+  
+  After adding the harvester, we can define if we want to run it weekly, daily, annually, and each time we do it the following happens:
+  
+  \begin{itemize}
+      \item New datasets will be added locally, if any;
+      \item Updates that are done on the remote datasets, will also be done locally;
+      \item Datasets that no longer exist remotely will be deleted locally.
+  \end{itemize}
+  
+  \subsubsection{ckanext-doi}
+  
+  We have added this extension to assign a DOI when a dataset is created and made public. This requires an account at \textit{DataCite}, since it is the service that handles the assignment. Note that the DOI is in the format:
+  
+  \begin{verbatim}
+  https://doi.org/[prefix]/[8 random alphanumeric characters]
+  \end{verbatim}
+  
+  Again, for this project this extension would not have the best of uses, as it would assign different DOI's to each dataset, when they are all part of the same investigation. As such, it would be useful to have a DOI, but in this case this would be the same for all datasets and would have to be assigned outside the system (whereby we could use the existing https://doi.org/10.5281/zenodo.5797919 referring to the \gls{sail} Project). However, this extension would be extremely useful in most cases.
+  
+  \subsubsection{ckanext-dataspatial}
+  
+  This extension is no longer maintained and unfortunately no longer works for the version of \textit{\gls{ckan}} we are using, however, like others mentioned, while interesting, it is not core. 
+
+  It would provide geospatial awareness of \textit{DataStore} data, which includes geospatial searches within datasets and the spatial extension of \textit{DataStore} searches. However, the first of the two capabilities can be achieved through ckanext-geoview.
+  
+  \subsubsection{ckanext-hierarchy}
+  
+ Often there are relationships between organizations, like the one we contemplate in our system, for example, since HASLab is an organization that belongs to \gls{inesctec}. However, in the default \textit{\gls{ckan}} system there is no way to make explicit the relationship between two or more organizations, so we chose to use this extension, which allows us to:
+  
+  \begin{itemize}
+      \item Create relationships between organisations;
+      \item Hierarchize the relationships;
+      \item For each organisation, on its datasets page, in addition to having available the ones it owns, we can choose to also provide the datasets of the organisations it owns.
+  \end{itemize}
+  
+  \subsubsection{ckanext-restricted}
+  
+  Through this extension we were able to answer one more of the points listed at the beginning of the chapter, since it provides the possibility of restricting access to resources in a dataset, while still being able to view the metadata but not the data itself. However, this extension is currently out of date, which does not allow proper use.
+  
+  The access levels that we can assign to the resources in a dataset are as follows:
+  
+  \begin{itemize}
+      \item Public;
+      \item Registered users;
+      \item Members of an organization;
+      \item Members of the organization that owns the dataset.
+  \end{itemize}
+  
+  \subsubsection{ckanext-oaipmh}
+  
+  Aside from the sources provided by the ckanext-harvest extension, this extends the \textit{\gls{ckan}} harvester to parse OAI-PMH metadata sources as well as import datasets. It supports metadata schemas such as oai\_dc (Dublin Core), used in the \gls{sail} project.
+  
+  This extension is outdated and, since it is not supported by the \textit{\gls{ckan}} team (it was developed by the community), it should not be updated again for the new \textit{\gls{ckan}} version. As such, there are some bugs that do not allow its proper use.
+  
+  \subsubsection{ckanext-b2find}
+  
+   The \textit{B2FIND} service, already discussed in Section \ref{tab:b2find} provides a user-friendly data discovery portal to search for research information stored in various repositories.
+ 
+   This extension allows the use of the \textit{B2FIND} service on \textit{\gls{ckan}}, which in essence ends up allowing a different approach to metadata aggregation, since the search portal is based on \textit{\gls{ckan}}. 
+   
+   Like others already mentioned, this extension is outdated, but it is currently in transition progress, and we estimate that in a few months it will be possible to enjoy its functionalities. 
+  
+  \subsubsection{ckanext-ord-hierarchy}
+  
+  Finally, this last extension is similar to ckanext-hierarchy, however, it is used to create and provide relationships between datasets through a hierarchy. Looking at the way we have structured the datasets, we believe that there are no ownership relations between them, however, it is another extension that brings quality to the system and could easily be considered for other cases.
+
+  \newpage
