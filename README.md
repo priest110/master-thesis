@@ -1,4 +1,4 @@
-# :mortar_board: Scientific Data Management
+# Scientific Data Management 
 
 ## Abstract 
 
