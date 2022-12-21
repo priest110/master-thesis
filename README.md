@@ -8,7 +8,7 @@ There are several techniques developed over the last years to deal with this pro
 
 **Keywords** Scientific data management, research, CKAN, EUDAT
 
-## More information
+## :information_source: More information
 
 As a solution to the problem of scientific data management, I developed a CKAN-based platform in this thesis.
 If you are curious, you can explore my work [here](https://github.com/priest110/ckan).
